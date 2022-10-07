@@ -5,8 +5,21 @@ using UnityEngine;
 public class Delivery : MonoBehaviour
 {
 
-    bool isPickedUp;
+    bool packagePickedUp;
     [SerializeField] float timeUntilDestroy = 1f;
+
+    [SerializeField] Color32 packagePickedUpColor = new Color32(1,1,1,1);
+    [SerializeField] Color32 noPackageColor = new Color32(1,1,1,1);
+
+    SpriteRenderer theSR;
+
+    void Start() 
+    {
+
+        theSR = GetComponent<SpriteRenderer>();
+
+        
+    }
 
     void OnCollisionEnter2D(Collision2D other) 
     {
@@ -19,20 +32,20 @@ public class Delivery : MonoBehaviour
     {
         
         //If package is triggered print pickup
-        if(other.tag == "Package" && isPickedUp == false){
+        if(other.tag == "Package" && !packagePickedUp){
 
         Debug.Log("Package picked up");
-        
-        if(isPickedUp == false){
+        //Placed above destroy so that other packages can not be picked up
+        packagePickedUp = true;
+        theSR.color = packagePickedUpColor;
         Destroy(other.gameObject,timeUntilDestroy);
-
-        }
-        isPickedUp = true;
+        
         }
 
-        if(other.tag == "Customer" && isPickedUp == true){
+        if(other.tag == "Customer" && packagePickedUp == true){
             Debug.Log("Package delivered");
-            isPickedUp = false;
+            packagePickedUp = false;
+            theSR.color = noPackageColor;
         }
     }
 
